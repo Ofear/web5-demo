@@ -1,0 +1,516 @@
+body {
+    cursor: url(data:image/png;base64,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) 16 16, auto;
+  }
+  body.a-body {
+    height: auto;
+    overflow: auto;
+  }
+  html.a-html {
+    height: auto;
+    overflow: auto;
+    position: static;
+  }
+  
+  /* make the viewer fill the background behind the elements instead of over it */
+  .vr-background {
+    overflow: hidden;
+  }
+  
+  /* A-Frame Scene Container Styling */
+  .scene-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Custom A-Frame styling */
+  .a-enter-vr {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .a-enter-vr-button {
+    background-color: rgba(70, 70, 70, 0.7) !important;
+    border-radius: 8px !important;
+    backdrop-filter: blur(4px);
+  }
+  
+  .a-enter-vr-button:hover {
+    background-color: rgba(100, 100, 100, 0.9) !important;
+  }
+  
+  /* Enhanced Controller Styling */
+  .aframe-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: rgba(40, 40, 40, 0.5);
+    padding: 10px 15px;
+    border-radius: 30px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    justify-content: center;
+  }
+  
+  .camera-controls {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .control-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  
+  .control-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .control-button:active {
+    transform: translateY(0);
+  }
+  
+  /* Card styling in A-Frame */
+  .clickable {
+    cursor: pointer;
+  }
+  
+  /* Card active state styling */
+  .card-active a-plane {
+    animation: card-pulse 1s ease-in-out infinite;
+  }
+  
+  @keyframes card-pulse {
+    0% { 
+      transform: scale(1); 
+      filter: brightness(1);
+    }
+    50% { 
+      transform: scale(1.02); 
+      filter: brightness(1.2);
+    }
+    100% { 
+      transform: scale(1); 
+      filter: brightness(1);
+    }
+  }
+  
+  /* Custom cursor styling */
+  .a-cursor {
+    animation: cursor-pulse 1.5s infinite alternate;
+  }
+  
+  @keyframes cursor-pulse {
+    0% { scale: 1; opacity: 0.7; }
+    100% { scale: 1.1; opacity: 1; }
+  }
+  
+  /* Speech bubble styling */
+  .speech-bubble {
+    position: relative;
+    background: rgba(34, 34, 34, 0.9);
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: white;
+    max-width: 200px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .speech-bubble:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-right-color: rgba(34, 34, 34, 0.9);
+    border-left: 0;
+    margin-top: -10px;
+    margin-left: -10px;
+  }
+  
+  /* for the html element inside which you are adding the a-frame embed code */
+  .vr-container {
+    height: 100vh; /* I want the embed to be full-height. You can give any value you want here. */
+    .vr-overlay-content {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      width: 100%;
+      height: 200px;
+      pointer-events: none; /* this is important as it enables your interactions on the overlay to be detected by a-frame */
+    }
+    .action {
+      pointer-events: initial; /* enables click on the button */
+    }
+  }
+  
+    
+  /* -- Styles for the template - can be ignored for the VR part */
+  header {
+    position: fixed;
+    z-index: 12;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #2B3A42;
+    color: #FFFFFF;
+    .logo, nav {
+      float: left;
+      width: 50%;
+      line-height: 1.5rem;
+    }
+    nav {
+      text-align: right;
+      a {
+        color: inherit;
+        text-decoration: none;
+        padding: 10px 20px;
+        display: inline-block;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        font-weight: 400;
+        vertical-align: bottom;
+        &:hover {
+          color: #FF530D;
+        }
+      }
+    }
+    .logo {
+      padding: 10px 20px;
+      display: inline-block;
+      font-weight: 500;
+      font-size: 1.25rem;
+    }
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+  section.home {
+    display: block;
+    max-width: 100%;
+    text-align: center;
+    color: #FFFFFF;
+    padding: 0;
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 400;
+    }
+    .action {
+      color: #FFFFFF;
+      background: #FF530D;
+      border: 0;
+      height: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 0 20px;
+      border-radius: 6px;
+    }
+    .attribution {
+      position: absolute;
+      display: block;
+      z-index: 12;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.75rem;
+      opacity: 0.5;
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
+  }
+  section.about {
+    background: #EFF9F9;
+  }
+  section.product {
+    position: absolute;
+    top: 0;
+    z-index: 9999;
+  }
+  .page-sections {
+    padding: 20px 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 11;
+  }
+  .section-title, .section-content {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .section-title {
+    font-size: 2rem;
+    color: #3F5765;
+    font-weight: 400;
+  }
+  footer {
+    background: #2B3A42;
+    color: #FFFFFF;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    span, nav {
+      float: left;
+    }
+    span {
+      display: block;
+      width: 50%;
+      padding: 20px;
+    }
+    nav {
+      text-align: right;
+      width: 50%;
+      a {
+        font-size: 0.875rem;
+        color: inherit;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 400;
+        display: inline-block;
+        padding: 20px;
+        &:hover {
+          color: #FF530D;
+        }
+      }
+    }
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-size: 16px;
+    font-family: "Montserrat", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+    color: #2B3A42;
+  }
+  
+  .card-container {
+    display: flex;
+    gap: 20px;
+    position: relative;
+    padding: 40px;
+    flex-wrap: wrap;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .card {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    color: #333;
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .main-card {
+    width: 300px;
+  }
+  
+  .main-card img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    transition: transform 0.3s ease;
+  }
+  
+  .main-card:hover img {
+    transform: scale(1.03);
+  }
+  
+  .card-text h2 {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .card-text p {
+    margin: 10px 0;
+  }
+  
+  .thumbnail {
+    width: 60px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .side-card {
+    width: 200px;
+  }
+  
+  .assistant-card {
+    width: 250px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .avatar {
+    width: 60px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Orbit Controls Styling */
+  .orbit-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+    width: 100%;
+    justify-content: center;
+    background-color: rgba(30, 30, 30, 0.6);
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .orbit-controls .control-button {
+    background: rgba(60, 60, 70, 0.7);
+    min-width: 100px;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  
+  .orbit-controls .control-button:hover {
+    background: rgba(80, 80, 100, 0.9);
+    transform: translateY(-2px);
+  }
+  
+  .orbit-controls .control-button.active {
+    background: rgba(100, 120, 200, 0.8);
+    box-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
+  }
+  
+  /* Add responsive styling for orbit controls */
+  @media (max-width: 768px) {
+    .orbit-controls {
+      flex-direction: column;
+      max-width: 80%;
+      margin: 15px auto 0;
+    }
+    
+    .orbit-controls .control-button {
+      min-width: auto;
+      width: 100%;
+    }
+  }
+  /* CSS styles for the A-Frame scene */
+  .card-container {
+    pointer-events: auto;
+  }
+  
+  /* Apply CSS variables to allow dynamic style changes */
+  :root {
+    --card-opacity: 0.85;
+    --card-color: #4a4a4a;
+    --card-highlight: #5a5a5a;
+    --text-color: white;
+  }
+  
+  /* CSS to style A-Frame entities with "card" class */
+  .card {
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* CSS filters can be applied via attributes */
+  [filter="hover"] {
+    filter: brightness(1.2);
+  }
+  
+  /* Style for the card when active */
+  .card-active {
+    --card-color: #5a7a9a;
+    --card-opacity: 0.95;
+  }
+  
+  /* Custom transition in/out animations */
+  @keyframes card-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  
+  /* Apply to the entire A-Frame scene */
+  .scene-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+  }
+  
+  /* Custom control UI styles */
+  .aframe-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .control-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .control-button:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }

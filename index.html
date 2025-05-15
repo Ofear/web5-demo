@@ -1,0 +1,447 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="styles/main.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500" rel="stylesheet">
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component@1.3.2/dist/aframe-environment-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-orbit-controls@1.3.0/dist/aframe-orbit-controls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/gloomcheng/aframe-gif-shader@latest/dist/aframe-gif-shader.min.js"></script>
+  <script src="https://unpkg.com/aframe-rounded@1.0.1/dist/aframe-rounded.min.js"></script>
+  
+  
+  <script src="scripts/aframe-card-components.js"></script>
+  <script src="scripts/voice-assistant.js"></script>
+  
+  <script>
+    // Custom component to set camera orientation after scene loaded
+    AFRAME.registerComponent('custom-camera-setup', {
+      init: function() {
+        // Wait for the scene to load
+        const sceneEl = this.el.sceneEl;
+        if (sceneEl.hasLoaded) {
+          this.setCamera();
+        } else {
+          sceneEl.addEventListener('loaded', this.setCamera.bind(this));
+        }
+      },
+      
+      setCamera: function() {
+        const cameraEl = document.querySelector('[camera]');
+if (!cameraEl) return;
+
+cameraEl.setAttribute('position', '3 1.6 -1');
+
+// Wait for look-controls to initialize, then set rotation
+setTimeout(() => {
+cameraEl.setAttribute('rotation', '0 90 0'); // Set initial yaw (look left)
+}, 100);
+      }
+    });
+    
+    // Animation component for the assistant
+    AFRAME.registerComponent('assistant-animation', {
+      init: function() {
+        const el = this.el; // This is the root assistant entity
+        const baseSphereEl = el.querySelector('#assistant-base-sphere');
+        const glowSphereEl = el.querySelector('#assistant-glow-sphere');
+        const waveTorus1El = el.querySelector('#wave-torus-1');
+        const waveTorus2El = el.querySelector('#wave-torus-2');
+        const waveTorus3El = el.querySelector('#wave-torus-3');
+
+        // Float animation for the whole assistant group
+        el.setAttribute('animation__float', {
+          property: 'position',
+          from: '0 0 0', 
+          to: '0 0.02 0',
+          dur: 2500, // Slightly slower float
+          dir: 'alternate',
+          loop: true,
+          easing: 'easeInOutSine'
+        });
+
+        if (baseSphereEl) {
+          baseSphereEl.setAttribute('animation__subtle_pulse', {
+            property: 'scale',
+            from: '1 1 1',
+            to: '1.01 1.01 1.01', // Very subtle
+            dur: 2200,
+            dir: 'alternate',
+            loop: true,
+            easing: 'easeInOutQuad'
+          });
+        }
+
+        if (glowSphereEl) {
+          glowSphereEl.setAttribute('animation__glow_opacity', {
+            property: 'opacity',
+            from: 0.1,
+            to: 0.3, // More subtle max glow
+            dur: 2000, 
+            dir: 'alternate',
+            loop: true,
+            easing: 'easeInOutSine'
+          });
+        }
+
+        // Animations for Wave Tori
+        const waveAnimation = (targetEl, delay, color, startRadius, endRadius, duration, rotation) => {
+          if (targetEl) {
+            targetEl.setAttribute('animation__radius', {
+              property: 'radius',
+              from: startRadius,
+              to: endRadius,
+              dur: duration,
+              dir: 'alternate',
+              loop: true,
+              easing: 'easeInOutSine',
+              startEvents: 'waveStart' 
+            });
+            targetEl.setAttribute('animation__opacity', {
+              property: 'opacity',
+              from: 0.2,
+              to: 0.7,
+              dur: duration * 0.8, // Slightly faster opacity change
+              dir: 'alternate',
+              loop: true,
+              easing: 'easeInQuad',
+              startEvents: 'waveStart'
+            });
+            targetEl.setAttribute('animation__rotation', {
+              property: 'rotation',
+              to: rotation,
+              dur: duration * 4, // Slower rotation
+              loop: true,
+              easing: 'linear'
+            });
+            // Stagger start times
+            setTimeout(() => {
+              targetEl.emit('waveStart');
+            }, delay);
+          }
+        };
+
+        waveAnimation(waveTorus1El, 0, '#80B3FF', 0.03, 0.08, 1800, '0 360 0'); // Cyan-ish
+        waveAnimation(waveTorus2El, 600, '#FF80B3', 0.04, 0.09, 2000, '360 0 0'); // Magenta-ish, slightly different params
+        waveAnimation(waveTorus3El, 1200, '#B3FF80', 0.035, 0.085, 1900, '0 0 360'); // Green-ish
+      }
+    });
+  </script>
+  <style>
+    /* CSS styles for the A-Frame scene */
+    .card-container {
+      pointer-events: auto;
+    }
+    
+    /* Apply CSS variables to allow dynamic style changes */
+    :root {
+      --card-opacity: 0.85;
+      --card-color: #4a4a4a;
+      --card-highlight: #5a5a5a;
+      --text-color: white;
+    }
+    
+    /* CSS to style A-Frame entities with "card" class */
+    .card {
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* CSS filters can be applied via attributes */
+    [filter="hover"] {
+      filter: brightness(1.2);
+    }
+    
+    /* Style for the card when active */
+    .card-active {
+      --card-color: #5a7a9a;
+      --card-opacity: 0.95;
+    }
+    
+    /* Custom transition in/out animations */
+    @keyframes card-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Apply to the entire A-Frame scene */
+    .scene-container {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+    
+    /* Custom control UI styles */
+    .aframe-controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .control-button {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .control-button:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Top navigation -->
+  <header>
+    </nav>
+  </header>
+    
+  <!-- A-Frame Scene -->
+  <div class="scene-container">
+    <a-scene class="vr-background" id="aframe-viewer" embedded vr-mode-ui="enabled: false" custom-camera-setup>
+      <!-- Asset preloading for more reliable image loading -->
+      <a-assets timeout="8000">
+        <!-- <img id="skyTexture" src="https://cdn.glitch.global/a11e482e-6d90-42c8-a9a4-a10a8754bab0/living-room-360.jpg?v=1653403149947" crossorigin="anonymous"> -->
+        <img id="skyTexture" src="./images/360/sphere.jpeg" crossorigin="anonymous">
+        
+        <!-- Product images -->
+        <img id="product1" src="./images/sandal.png" crossorigin="anonymous">
+        <img id="product2" src="./images/sandal2.png" crossorigin="anonymous">
+        
+        <!-- Material textures -->
+        <img id="cardTexture" src="./images/card-dark-v2.png" crossorigin="anonymous">
+        <!-- Material textures -->
+        <img id="cardTexture-long" src="./images/card-long-dark-v2.png" crossorigin="anonymous">
+        
+        <!-- 3D Model -->
+        <a-asset-item id="shoe-model" src="3d_models/unused_blue_vans_shoe/scene.gltf"></a-asset-item>
+      </a-assets>
+      
+      <!-- Environment -->
+      <a-sky src="#skyTexture" rotation="5 0 1"></a-sky>
+      
+      <!-- Lighting -->
+      <a-entity position="0 0 0">
+        <a-entity light="type: ambient; color: #ffffff; intensity: 0.5"></a-entity>
+        <a-entity light="type: directional; color: #ffffff; intensity: 0.8; castShadow: true" position="-1 1 0"></a-entity>
+        <a-entity light="type: point; color: #ffffff; intensity: 0.5" position="2 1 0"></a-entity>
+      </a-entity>
+
+      <!-- Categories Menu in top left -->
+      <a-entity id="categories-menu" position="2 1.5 -2" rotation="0 45 0">
+        <!-- Categories Header -->
+        <a-entity position="0 0.5 0" 
+                  text="shader: msdf; anchor: center; width: 0.7; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: Categories; wrapCount: 20; align: center"></a-entity>
+        
+        <!-- Category Buttons -->
+        <a-entity id="tshirts-button" position="-0.06 0.4 0" class="clickable">
+          <a-rounded width="0.5" height="0.35" radius="0.17" color="#ffffff" opacity="0.3" 
+                    animation__mouseenter="property: opacity; to: 0.6; dur: 200; startEvents: mouseenter"
+                    animation__mouseleave="property: opacity; to: 0.3; dur: 200; startEvents: mouseleave"
+                    animation__click="property: scale; to: 0.95 0.95 0.95; dur: 100; startEvents: click; dir: alternate; loop: 1"></a-rounded>
+          <a-entity position="0 0 0.01" 
+                    text="shader: msdf; anchor: center; width: 0.5; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: T-Shirts; wrapCount: 20; align: center"></a-entity>
+        </a-entity>
+        
+        <a-entity id="jackets-button" position="-0.07 0.3 0" class="clickable">
+          <a-rounded width="1.8" height="0.35" radius="0.17" color="#ffffff" opacity="0.3"
+                    animation__mouseenter="property: opacity; to: 0.6; dur: 200; startEvents: mouseenter"
+                    animation__mouseleave="property: opacity; to: 0.3; dur: 200; startEvents: mouseleave"
+                    animation__click="property: scale; to: 0.95 0.95 0.95; dur: 100; startEvents: click; dir: alternate; loop: 1"></a-rounded>
+          <a-entity position="0 0 0.01" 
+                    text="shader: msdf; anchor: center; width: 0.5; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: Jackets; wrapCount: 20; align: center"></a-entity>
+        </a-entity>
+        
+        <a-entity id="pants-button" position="-0.09 0.2 0" class="clickable">
+          <a-rounded width="1.8" height="0.35" radius="0.17" color="#ffffff" opacity="0.3"
+                    animation__mouseenter="property: opacity; to: 0.6; dur: 200; startEvents: mouseenter"
+                    animation__mouseleave="property: opacity; to: 0.3; dur: 200; startEvents: mouseleave"
+                    animation__click="property: scale; to: 0.95 0.95 0.95; dur: 100; startEvents: click; dir: alternate; loop: 1"></a-rounded>
+          <a-entity position="0 0 0.01" 
+                    text="shader: msdf; anchor: center; width: 0.5; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: Pants; wrapCount: 20; align: center"></a-entity>
+        </a-entity>
+        
+        <a-entity id="shoes-button" position="-0.09 0.1 0" class="clickable">
+          <a-rounded width="1.8" height="0.35" radius="0.17" color="#ffffff" opacity="0.3"
+                    animation__mouseenter="property: opacity; to: 0.6; dur: 200; startEvents: mouseenter"
+                    animation__mouseleave="property: opacity; to: 0.3; dur: 200; startEvents: mouseleave"
+                    animation__click="property: scale; to: 0.95 0.95 0.95; dur: 100; startEvents: click; dir: alternate; loop: 1"></a-rounded>
+          <a-entity position="0 0 0.01" 
+                    text="shader: msdf; anchor: center; width: 0.5; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: Shoes; wrapCount: 20; align: center"></a-entity>
+        </a-entity>
+        
+        <a-entity id="accessories-button" position="-0.04 0 0" class="clickable">
+          <a-rounded width="1.8" height="0.35" radius="0.17" color="#ffffff" opacity="0.3"
+                    animation__mouseenter="property: opacity; to: 0.6; dur: 200; startEvents: mouseenter"
+                    animation__mouseleave="property: opacity; to: 0.3; dur: 200; startEvents: mouseleave"
+                    animation__click="property: scale; to: 0.95 0.95 0.95; dur: 100; startEvents: click; dir: alternate; loop: 1"></a-rounded>
+          <a-entity position="0 0 0.01" 
+                    text="shader: msdf; anchor: center; width: 0.5; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: Accessories; wrapCount: 20; align: center"></a-entity>
+        </a-entity>
+      
+      </a-entity>
+
+      <!-- Hand controls -->
+      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .raycastable"></a-entity>
+      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
+
+      <!-- Card Container -->
+      <a-entity id="card-container" position="3 1.5 -5" rotation="0 0 0">
+        <!-- Main Card (left) -->
+        <a-entity id="main-card" position="-2.5 2 -1" rotation="0 15 0" scale="1 1 1" class="clickable"
+                 card-hover-effect="glowIntensity: 0.4" 
+                 fade-in="delay: 300; duration: 1000">
+          <!-- Card background plane (always visible) -->
+          <a-plane width="1.2" height="2.8" color="#ffffff" opacity="1"
+                   material="src: #cardTexture-long; transparent: true; shader: standard; repeat: 1 1"
+                   animation__mouseenter="property: scale; to: 1.05 1.05 1.05; dur: 200; startEvents: mouseenter"
+                   animation__mouseleave="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"
+                   animation__click="property: rotation; to: 0 20 0; dur: 300; startEvents: click"
+                   animation__clickreset="property: rotation; to: 0 15 0; dur: 300; startEvents: mouseleave">
+          </a-plane>
+
+          <!-- Product image plane (PNG with transparency, slightly in front) -->
+          <a-plane position="0 0.5 0.01" width="1" height="0.9"
+                   material="src: #product1; shader: flat; transparent: true; side: double"></a-plane>
+          
+          <!-- Divider line -->
+          <a-plane position="0 -0.1 0.002" width="0.95" height="0.02" color="#ffffff"></a-plane>
+          
+          <!-- Title text -->
+          <a-entity position="-0.45 1 0.002"
+                   text="shader: msdf; anchor: left; width: 1; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: Modern Footwear\nCollection 2025; wrapCount: 20; lineHeight: 50"></a-entity>
+          
+          <!-- Subtitle text -->
+          <a-entity position="-0.45 -0.3 0.002"
+                   text="shader: msdf; anchor: left; width: 1; baseline: top; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; opacity: 0.8; value: Favorites from - previous purchases; wrapCount: 20"></a-entity>
+          
+          <!-- Thumbnail shoe image in a light gray box -->
+          <a-plane position="-0.15 -0.75 0.003" width="0.6" height="0.4" color="#ffffff" opacity="1">
+            <a-plane position="0 0 0.001" width="0.6" height="0.4"
+                     material="src: #product2; shader: flat; transparent: true"></a-plane>
+          </a-plane>
+        </a-entity>
+
+        <!-- Side Card (top right) -->
+        <a-entity id="side-card" position="1.85 1.5 0" rotation="0 -10 0" scale="1 1 1" class="clickable"
+                 card-hover-effect="glowIntensity: 0.3"
+                 fade-in="delay: 600; duration: 800">
+          <a-plane width="1" height="1" color="#ffffff" opacity="0.85" 
+                  material="src: #cardTexture; side: double; metalness: 0.2; roughness: 0.3; transparent: true; shader: standard; repeat: 1 1"
+                  animation__mouseenter="property: scale; to: 1.05 1.05 1.05; dur: 200; startEvents: mouseenter"
+                  animation__mouseleave="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"
+                  animation__click="property: rotation; to: 0 -15 0; dur: 300; startEvents: click"
+                  animation__clickreset="property: rotation; to: 0 -10 0; dur: 300; startEvents: mouseleave">
+            
+            <!-- Title text -->
+            <a-entity position="-0.4 0.25 0.002"
+                     text="shader: msdf; anchor: left; width: 1; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: New Arrivals; wrapCount: 15; lineHeight: 50"></a-entity>
+            
+            <!-- Subtitle text -->
+            <a-entity position="-0.4 -0.4 0.002"
+                     text="shader: msdf; anchor: left; width: 1; baseline: top; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; opacity: 0.8; value: Limited edition releases; wrapCount: 25"></a-entity>
+            
+            
+
+          </a-plane>
+        </a-entity>
+        <!-- 3D Model container using model-viewer component -->
+      <a-entity position="1.8 1.25 0.3" scale="0.08 0.08 0.08" rotation="0 0 0" class="clickable" model-viewer="highlightColor: #6495ED; objectDistance: 0.15; maxScale: 1.5">
+          <a-entity gltf-model="#shoe-model" 
+                   animation="property: rotation; to: 0 360 0; loop: true; dur: 10000;"></a-entity>
+        </a-entity>
+
+        
+        <!-- User's feet view -->
+        <a-entity id="feet-view" position="0 -0.8 0.4" rotation="-30 0 0">
+          <a-plane width="0.8" height="0.3" opacity="0" material="transparent: true">
+            <!-- This is where the feet would be visible in AR -->
+          </a-plane>
+        </a-entity>
+      </a-entity>
+
+      <!-- Camera with cursor for interaction -->
+      <a-entity camera="fov: 70" position="3 1.6 -1"
+                look-controls="enabled: true; reverseMouseDrag: false; touchEnabled: true" 
+                wasd-controls="enabled: true">
+        <a-cursor color="#FFFFFF" opacity="0.8" fuse="false" raycaster="objects: .clickable"></a-cursor>
+        
+        <!-- Camera-attached Assistant UI that will work in VR -->
+        <a-entity id="camera-assistant" position="0.9 -0.45 -0.8" rotation="0 0 0">
+          <!-- Speech bubble -->
+          <a-entity position="-0.24 -0.01 0" 
+                   speech-bubble="width: 0.4; height: 0.1; color: #222222; textValue: Would you like to see\nmore recommendations?; textColor: #FFFFFF; offset: 0 0 0; pointerSide: right">
+          </a-entity>
+          
+          <!-- Animated assistant -->
+          <a-entity assistant-animation position="0 0 0" scale="0.2 0.3 0.2">
+            <!-- Glow Sphere (outermost) -->
+            <a-sphere id="assistant-glow-sphere" radius="0.13" color="#A7DFFF" opacity="0.2" side="back" material="shader: flat; transparent: true; fog: false;">
+            </a-sphere>
+            <a-sphere id="assistant-glow-sphere2" radius="0.15" color="#A7DFFF" opacity="0.3" side="back" material="shader: flat; transparent: true; fog: false;">
+            </a-sphere>
+            
+            <!-- Base dark sphere (user changed opacity to 0.35) -->
+            <a-sphere id="assistant-base-sphere" radius="0.12" color="#0A0F14" opacity="0.1" material="shader: standard; metalness: 0.3; roughness: 0.6; fog: false;">
+              <!-- Wave Torus 1 -->
+              <a-torus id="wave-torus-1" radius="0.06" radius-tubular="0.003" color="#80B3FF" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="30 30 0">
+              </a-torus>
+              <a-torus id="wave-torus-1-2" radius="0.06" radius-tubular="0.003" color="#80B3FF" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="30 30 30">
+              </a-torus>
+              <!-- Wave Torus 2 -->
+              <a-torus id="wave-torus-2" radius="0.07" radius-tubular="0.0035" color="#FF80B3" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="0 30 0">
+              </a-torus>
+              <a-torus id="wave-torus-2-2" radius="0.07" radius-tubular="0.0035" color="#FF80B3" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="0 30 0">
+              </a-torus>
+              <!-- Wave Torus 3 -->
+              <a-torus id="wave-torus-3" radius="0.05" radius-tubular="0.003" color="#B3FF80" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="0 60 30">
+              </a-torus>
+              <a-torus id="wave-torus-3-2" radius="0.05" radius-tubular="0.003" color="#B3FF80" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="30 60 0">
+              </a-torus>
+              <!-- Wave Torus 1 -->
+              <a-torus id="wave-torus-1-3" radius="0.07" radius-tubular="0.003" color="#80B3FF" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="30 60 0">
+              </a-torus>
+              <a-torus id="wave-torus-1-2" radius="0.05" radius-tubular="0.003" color="#80B3FF" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="30 60 30">
+              </a-torus>
+              <!-- Wave Torus 2 -->
+              <a-torus id="wave-torus-2-3" radius="0.06" radius-tubular="0.0035" color="#FF80B3" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="0 30 0">
+              </a-torus>
+              <a-torus id="wave-torus-2-2" radius="0.04" radius-tubular="0.0035" color="#FF80B3" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="0 60 0">
+              </a-torus>
+              <!-- Wave Torus 3 -->
+              <a-torus id="wave-torus-3-3" radius="0.06" radius-tubular="0.003" color="#B3FF80" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="0 60 30">
+              </a-torus>
+              <a-torus id="wave-torus-3-2" radius="0.07" radius-tubular="0.003" color="#B3FF80" segments-tubular="12" segments-radial="16" opacity="0.5" material="shader: flat; transparent: true; side: double; fog: false;" rotation="0 60 0">
+              </a-torus>
+            </a-sphere>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+    </a-scene>
+    
+    <!-- Test entity for aframe-rounded -->
+    <a-entity rounded="width: 0.5; height: 0.5; radius: 0.05; color: red;" position="0 1 -3"></a-entity>
+
+  <!-- <footer>
+    <span class="post">AR/VR Interface Demo</span>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#product">Product</a>
+    </nav>
+  </footer> -->
+
+  <!-- Add JavaScript file -->
+  <script src="scripts/main.js"></script>
+</body>
+</html>
